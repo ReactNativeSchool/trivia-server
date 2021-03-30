@@ -8,6 +8,17 @@ export const typeDefs = gql`
 
   type Mutation {
     fetchQuestions: FetchQuestionsResponse
+    register(user: NewUser!): AuthResponse
+  }
+
+  input NewUser {
+    username: String!
+    password: String!
+  }
+
+  type AuthResponse {
+    username: String
+    token: String
   }
 
   type ExampleResponse {

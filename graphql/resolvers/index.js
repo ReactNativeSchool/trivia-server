@@ -3,6 +3,7 @@ import { unescape, shuffle } from "lodash";
 import { ApolloError } from "apollo-server-micro";
 
 import { Question } from "../../models/Question";
+import { User } from "../../models/User";
 
 export const resolvers = {
   Query: {
@@ -38,6 +39,17 @@ export const resolvers = {
   },
 
   Mutation: {
+    register: async (parent, args) => {
+      const { username, password } = args.user;
+
+      const user = await new User({ username, password }).save();
+
+      return {
+        username: user.username,
+        token: "example token",
+      };
+    },
+
     fetchQuestions: async () => {
       const url = "https://opentdb.com/api.php?amount=3";
       const response = await fetch(url);

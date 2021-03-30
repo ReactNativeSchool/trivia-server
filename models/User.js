@@ -25,4 +25,12 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
+UserSchema.post("save", async (error, doc, next) => {
+  if (error.name === "MongoError" && error.code === 11000) {
+    next(new Error("Username is already used."));
+  } else {
+    next(error);
+  }
+});
+
 export const User = mongoose.models.User || mongoose.model("User", UserSchema);
