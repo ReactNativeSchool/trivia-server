@@ -1,25 +1,44 @@
 import mongoose from "mongoose";
-import { unescape } from "lodash";
+import { unescape, shuffle } from "lodash";
+import { ApolloError } from "apollo-server-micro";
 
-import { connectMongo } from "../../util/dbConnect";
 import { Question } from "../../models/Question";
 
 export const resolvers = {
   Query: {
     greet: async () => {
-      await connectMongo();
-
       return {
         name: "Jane Doe",
         message: "Hello, world!",
+      };
+    },
+
+    question: async () => {
+      // const questions = await Question.find({}, null, { limit: 1 }).exec();
+      const questions = await Question.aggregate([
+        {
+          $sample: { size: 1 },
+        },
+      ]);
+
+      if (questions.length === 0) {
+        throw new ApolloError("Sorry, you've run out of questions!");
+      }
+
+      const question = questions[0];
+
+      return {
+        _id: question._id,
+        question: question.question,
+        category: question.category,
+        difficulty: question.difficulty,
+        answers: shuffle(question.answers),
       };
     },
   },
 
   Mutation: {
     fetchQuestions: async () => {
-      await connectMongo();
-
       const url = "https://opentdb.com/api.php?amount=3";
       const response = await fetch(url);
       const { results } = await response.json();
