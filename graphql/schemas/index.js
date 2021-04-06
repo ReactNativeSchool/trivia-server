@@ -9,7 +9,6 @@ export const typeDefs = gql`
   type Mutation {
     fetchQuestions: FetchQuestionsResponse
     register(user: NewUser!): AuthResponse
-    signin(username: String!, password: String!): AuthResponse
   }
 
   input NewUser {
