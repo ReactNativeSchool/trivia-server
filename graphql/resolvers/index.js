@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 import { unescape, shuffle } from "lodash";
-import { ApolloError, UserInputError } from "apollo-server-micro";
+import {
+  ApolloError,
+  UserInputError,
+  AuthenticationError,
+} from "apollo-server-micro";
 
 import { Question } from "../../models/Question";
 import { User } from "../../models/User";
@@ -14,7 +18,8 @@ export const resolvers = {
       };
     },
 
-    question: async () => {
+    question: async (parent, args, context) => {
+      console.log("question context", context);
       // const questions = await Question.find({}, null, { limit: 1 }).exec();
       const questions = await Question.aggregate([
         {
