@@ -9,6 +9,14 @@ import {
 import { Question } from "../../models/Question";
 import { User } from "../../models/User";
 
+const requireAuth = (context) => {
+  if (!context.user) {
+    throw new AuthenticationError("Authentication required.");
+  }
+
+  return;
+};
+
 export const resolvers = {
   Query: {
     greet: async () => {
@@ -80,7 +88,9 @@ export const resolvers = {
       };
     },
 
-    fetchQuestions: async () => {
+    fetchQuestions: async (parent, args, context) => {
+      requireAuth(context);
+
       const url = "https://opentdb.com/api.php?amount=3";
       const response = await fetch(url);
       const { results } = await response.json();
