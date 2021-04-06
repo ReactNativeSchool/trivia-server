@@ -43,10 +43,11 @@ export const resolvers = {
       const { username, password } = args.user;
 
       const user = await new User({ username, password }).save();
+      const token = await user.generateToken();
 
       return {
         username: user.username,
-        token: "example token",
+        token,
       };
     },
 
@@ -61,13 +62,16 @@ export const resolvers = {
 
       const { isMatch } = await user.comparePasswords(password);
 
-      if (!isMatch) {
+      let token;
+      if (isMatch) {
+        token = await user.generateToken();
+      } else {
         throw new UserInputError("Invalid password.");
       }
 
       return {
         username: username,
-        token: "example sign in token",
+        token,
       };
     },
 
