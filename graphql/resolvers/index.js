@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { unescape, shuffle } from "lodash";
-import { ApolloError } from "apollo-server-micro";
+import { ApolloError, UserInputError } from "apollo-server-micro";
 
 import { Question } from "../../models/Question";
 import { User } from "../../models/User";
@@ -47,6 +47,27 @@ export const resolvers = {
       return {
         username: user.username,
         token: "example token",
+      };
+    },
+
+    signin: async (parent, args) => {
+      const { username, password } = args;
+
+      const user = await User.findOne({ username }).exec();
+
+      if (!user) {
+        throw new UserInputError("Invalid username.");
+      }
+
+      const { isMatch } = await user.comparePasswords(password);
+
+      if (!isMatch) {
+        throw new UserInputError("Invalid password.");
+      }
+
+      return {
+        username: username,
+        token: "example sign in token",
       };
     },
 
