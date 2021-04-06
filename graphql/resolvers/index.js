@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { unescape, shuffle } from "lodash";
-import { ApolloError } from "apollo-server-micro";
+import { ApolloError, UserInputError } from "apollo-server-micro";
+import jwt from "jsonwebtoken";
 
 import { Question } from "../../models/Question";
 import { User } from "../../models/User";
@@ -14,7 +15,8 @@ export const resolvers = {
       };
     },
 
-    question: async () => {
+    question: async (parent, args, context) => {
+      console.log(context);
       // const questions = await Question.find({}, null, { limit: 1 }).exec();
       const questions = await Question.aggregate([
         {
@@ -43,10 +45,35 @@ export const resolvers = {
       const { username, password } = args.user;
 
       const user = await new User({ username, password }).save();
+      const token = user.generateToken();
 
       return {
         username: user.username,
-        token: "example token",
+        token,
+      };
+    },
+
+    signin: async (parent, args) => {
+      const { username, password } = args;
+
+      const user = await User.findOne({ username }).exec();
+
+      if (!user) {
+        throw new UserInputError("Invalid username.");
+      }
+
+      const isMatch = await user.comparePasswords(password);
+
+      let token;
+      if (isMatch) {
+        token = await user.generateToken();
+      } else {
+        throw new UserInputError("Invalid password.");
+      }
+
+      return {
+        username: user.username,
+        token,
       };
     },
 
