@@ -27,9 +27,24 @@ export const resolvers = {
     },
 
     question: async (parent, args, context) => {
-      console.log("question context", context);
+      let questionsAnswered = [];
+
+      if (context.user) {
+        questionsAnswered = [
+          ...context.user.incorrectQuestions.map((_id) =>
+            mongoose.Types.ObjectId(_id)
+          ),
+          ...context.user.correctQuestions.map((_id) =>
+            mongoose.Types.ObjectId(_id)
+          ),
+        ];
+      }
+
       // const questions = await Question.find({}, null, { limit: 1 }).exec();
       const questions = await Question.aggregate([
+        {
+          $match: { _id: { $nin: questionsAnswered } },
+        },
         {
           $sample: { size: 1 },
         },
