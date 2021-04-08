@@ -167,6 +167,10 @@ export const resolvers = {
     fetchQuestions: async (parent, args, context) => {
       requireAuth(context);
 
+      if (!context.user.roles.includes("admin")) {
+        throw new AuthenticationError("You're not authorized to do that.");
+      }
+
       const url = "https://opentdb.com/api.php?amount=3";
       const response = await fetch(url);
       const { results } = await response.json();
