@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { unescape, shuffle } from "lodash";
+import { unescape, shuffle, isBoolean } from "lodash";
 import {
   ApolloError,
   UserInputError,
@@ -52,6 +52,49 @@ export const resolvers = {
   },
 
   Mutation: {
+    completeQuestion: async (parent, args, context) => {
+      requireAuth(context);
+
+      if (!args.questionId) {
+        throw new UserInputError("No question id specified.");
+      }
+
+      if (!isBoolean(args.correct)) {
+        throw new UserInputError("Invalid input for correct.");
+      }
+
+      const question = Question.findOne({ _id: args.questionId });
+      if (!question) {
+        throw new UserInputError("No question exists with that id.");
+      }
+
+      let modifier;
+      if (args.correct) {
+        modifier = { correctQuestions: args.questionId };
+      } else {
+        modifier = { incorrectQuestions: args.questionId };
+      }
+
+      const user = await User.findOneAndUpdate(
+        { _id: context.user._id },
+        {
+          $addToSet: modifier,
+        },
+        {
+          new: true,
+        }
+      );
+
+      const questionsAnsweredCorrectly = user?.correctQuestions?.length || 0;
+      const questionsAnswered =
+        questionsAnsweredCorrectly + user?.incorrectQuestions?.length || 0;
+
+      return {
+        questionsAnswered,
+        questionsAnsweredCorrectly,
+      };
+    },
+
     register: async (parent, args) => {
       const { username, password } = args.user;
 

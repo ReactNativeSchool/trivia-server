@@ -10,11 +10,17 @@ export const typeDefs = gql`
     fetchQuestions: FetchQuestionsResponse
     register(user: NewUser!): AuthResponse
     signin(username: String!, password: String!): AuthResponse
+    completeQuestion(questionId: String!, correct: Boolean!): Stats
   }
 
   input NewUser {
     username: String!
     password: String!
+  }
+
+  type Stats {
+    questionsAnswered: Int
+    questionsAnsweredCorrectly: Int
   }
 
   type AuthResponse {
