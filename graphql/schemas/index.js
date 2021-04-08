@@ -4,6 +4,7 @@ export const typeDefs = gql`
   type Query {
     greet: ExampleResponse
     question: Question
+    me: User
   }
 
   type Mutation {
@@ -16,6 +17,11 @@ export const typeDefs = gql`
   input NewUser {
     username: String!
     password: String!
+  }
+
+  type User {
+    username: String
+    stats: Stats
   }
 
   type Stats {

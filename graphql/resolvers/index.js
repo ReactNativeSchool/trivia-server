@@ -19,6 +19,24 @@ const requireAuth = (context) => {
 
 export const resolvers = {
   Query: {
+    me: async (parent, args, context) => {
+      requireAuth(context);
+
+      const user = context.user;
+
+      const questionsAnsweredCorrectly = user?.correctQuestions?.length || 0;
+      const questionsAnswered =
+        questionsAnsweredCorrectly + user?.incorrectQuestions?.length || 0;
+
+      return {
+        username: user.username,
+        stats: {
+          questionsAnswered,
+          questionsAnsweredCorrectly,
+        },
+      };
+    },
+
     greet: async () => {
       return {
         name: "Jane Doe",
