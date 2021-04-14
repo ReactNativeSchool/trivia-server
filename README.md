@@ -1,3 +1,10 @@
+# Learn to Build this App!
+
+This repo was prepared for the React Native School Class [_Building an API With Next.js API Routes, Apollo Server, MongoDB, and Mongoose_](https://www.reactnativeschool.com/building-api-nextjs-apollo-mongo-mongoose/). If you're curious about the how/why on the decisions in this project be sure to check out the class!
+
+
+---
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
