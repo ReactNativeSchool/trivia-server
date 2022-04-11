@@ -5,9 +5,5 @@ export const connectMongo = async () => {
     return;
   }
 
-  return mongoose.connect(process.env.DB_CONNECTION, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  });
+  return mongoose.connect(process.env.DB_CONNECTION);
 };

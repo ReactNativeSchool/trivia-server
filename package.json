@@ -5,17 +5,23 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "apollo-server-micro": "^2.21.1",
+    "apollo-server-micro": "^3.6.7",
     "bcryptjs": "^2.4.3",
-    "graphql": "^15.5.0",
+    "graphql": "^16.3.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
-    "mongoose": "^5.12.0",
-    "next": "10.0.9",
-    "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "micro": "^9.3.4",
+    "mongoose": "^6.2.10",
+    "next": "12.1.4",
+    "react": "18.0.0",
+    "react-dom": "18.0.0"
+  },
+  "devDependencies": {
+    "eslint": "8.13.0",
+    "eslint-config-next": "12.1.4"
   }
 }

@@ -57,7 +57,7 @@ UserSchema.pre("save", async function (next) {
 });
 
 UserSchema.post("save", async (error, doc, next) => {
-  if (error.name === "MongoError" && error.code === 11000) {
+  if (error.code === 11000) {
     next(new Error("Username is already used."));
   } else {
     next(error);
